@@ -1,5 +1,5 @@
 # flet-lite
-flet-lite is a tiny version of flet that not uses subprocess or multiprocessing. Its only uses threads 🪄.
+`flet-lite` is tiny version of flet that is compatible with with devices like iPadOS and iOS. Its not using `subprocess` or `multiprocess` which are not supported on mobile and iPad as will. Its just magic how everything is work properly 🪄!
 
 || **Why flet-lite 🙃?**
 
@@ -23,5 +23,11 @@ pip install flet_lite --upgrade
 This `flet-lite` is using the `flet` version v0.7
 
 Everything is the same on original flet, read the docs here:
-
 [flet.dev](https://flet.dev/)👈
+
+## flet commands 
+Due iPadOS limits, you cant use many of `flet` commands. The supported command is:
+- **`python3 -m flet.publish myapp.py`**: This is used to create a pyodide site of your flet application so it can work on a normal web host (Any host that support static files, for example php servers).
+
+## best usage practice
+soon
