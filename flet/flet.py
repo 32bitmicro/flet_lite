@@ -25,11 +25,12 @@ def app (
     use_color_emoji=False,
     route_url_strategy="path",
     auth_token=None,
+    debug=False
     ):
     if view != FLET_APP:
         print("WARNING: flet-lite will always work on web_browser view mode.")
     
-    the_page = Page(target_function=target)
+    the_page = Page(target_function=target, debug=debug)
 
     while True:
         pass

@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-
+import threading
 from .get_free_port import free_port
 
 
@@ -23,14 +23,14 @@ class ApiHost:
 
         @app.route("/", methods=["POST"])
         def index():
-            self.page.start_target()
+            threading.Thread(target=self.page.start_target, daemon=True).start()
             return {}
 
 
         @app.route("/get_data", methods=["POST"])
         def get_data ():
             if len(self.updates_and_events) != 0:
-                d = self.updates_and_events[-1]
+                d = self.updates_and_events[0]
                 self.updates_and_events.remove(d)
                 return d
             return {}
@@ -42,5 +42,5 @@ class ApiHost:
 
         app.run(port=self.port)
     
-    def add_update_on_wait(self, update):
-        pass
+    def add_update_on_wait(self, update:dict):
+        self.updates_and_events.append(update)
