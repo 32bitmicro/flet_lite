@@ -15,8 +15,14 @@ You can use any code editor that support `pip` on mobile or iPad, these are some
 ## installation ⬇️
 
 Using `pip`, enter:
+- **Soon**
 ```zsh
 pip install flet_lite --upgrade
+```
+
+To use the beta version, install it from `git` command:
+```zsh
+pip install git+https://github.com/SKbarbon/flet_lite.git --upgrade
 ```
 
 ## docs 📖
