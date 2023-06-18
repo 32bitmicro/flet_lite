@@ -1,6 +1,6 @@
 from typing import Literal
 from .page import Page
-
+import signal, sys
 
 
 WEB_BROWSER = "web_browser"
@@ -32,5 +32,14 @@ def app (
     
     the_page = Page(target_function=target, debug=debug)
 
-    while True:
+    # Define a signal handler function
+    def signal_handler(signal, frame):
+        sys.exit()
+
+    # Set the signal handler for SIGINT (Ctrl+C)
+    signal.signal(signal.SIGINT, signal_handler)
+
+    # open a loop so the threads of the two hosts not closed.
+    still_open = True
+    while still_open:
         pass

@@ -26,7 +26,7 @@ pip install git+https://github.com/SKbarbon/flet_lite.git --upgrade
 ```
 
 ## docs 📖
-This `flet-lite` is using the `flet` version v0.7
+This `flet-lite` is using the `flet` version v0.7.4
 
 Everything is the same on original flet, read the docs here:
 [flet.dev](https://flet.dev/)👈

@@ -21,6 +21,12 @@ class ApiHost:
     def host (self):
         app = self.app
 
+        import logging
+        log = logging.getLogger('werkzeug')
+        log.setLevel(logging.ERROR)
+        app.logger.disabled = True
+        log.disabled = True
+
         @app.route("/", methods=["POST"])
         def index():
             threading.Thread(target=self.page.start_target, daemon=True).start()
@@ -44,3 +50,9 @@ class ApiHost:
     
     def add_update_on_wait(self, update:dict):
         self.updates_and_events.append(update)
+    
+    def push_an_error(self, error:str):
+        self.updates_and_events.append({
+            "action" : "error",
+            "content" : str(error)
+        })

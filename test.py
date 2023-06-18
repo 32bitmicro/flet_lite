@@ -1,9 +1,7 @@
 from flet import *
-import flet
 import time
 
-def main (page:flet.Page):
-    tf = flet.TextField(label="Hmmmm..")
-    page.add(tf)
+def main(page:Page):
+    page.add(Text("Opps"))
 
-flet.app(target=main, debug=False)
+app(target=main, debug=False)
