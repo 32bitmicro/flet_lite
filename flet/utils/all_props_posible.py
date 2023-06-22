@@ -21,5 +21,5 @@ def all_posible_props ():
         "dense", "error_style", "filled", "focused_bgcolor", "focused_border_color", 
         "helper_style", "helper_text", "hint_text", "label", "max_length", "max_lines",
         "min_lines", "multiline", "password", "read_only", "prefix_text", "text_size",
-        "expand"
+        "expand", "disabled"
     ]

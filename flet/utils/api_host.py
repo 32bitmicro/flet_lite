@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 import threading
 from .get_free_port import free_port
@@ -44,6 +44,7 @@ class ApiHost:
 
         @app.route("/push_data", methods=["POST"])
         def push_data():
+            print(request.values)
             return {}
 
         app.run(port=self.port)

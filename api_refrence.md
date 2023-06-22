@@ -40,3 +40,15 @@
     }
 }
 ```
+
+## on 'push' update from browser
+```json
+{
+    "action" : "push",
+    "control_update" : true,
+    "control_data" : {
+        "number" : 0,
+        "flet_class_dict" : {}
+    }
+}
+```

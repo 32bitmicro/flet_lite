@@ -1,6 +1,5 @@
-from flet import Page
+from flet_core_custom import Page
 import flet
-import sys
 import json
 import asyncio
 
@@ -11,10 +10,13 @@ from flet_browser.flet_utils.generate_control import generate_a_control
 from flet_browser.flet_utils.update_page import update_page
 from flet_browser.ui.push_error import show_error_content
 from flet_browser.flet_utils.update_control import update_a_control
+from api.value_update import update_value
+
 
 class Main:
     def __init__(self, page:flet.Page) -> None:
         self.page = page
+        page.main_class = self
         page.update()
 
         # Initialise that target function on page on real-python
@@ -50,6 +52,7 @@ class Main:
             control_number = update_content["control_data"]['number']
             self.page.add(new_control)
             self.all_controls.update({f"{control_number}":new_control})
+            new_control.flet_lite_number = control_number
             new_control.update()
         # error request
         elif update_content['action'] == "error":
