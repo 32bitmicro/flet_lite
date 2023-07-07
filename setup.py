@@ -6,14 +6,14 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name='flet_lite',
-    version='1.0',
+    version='1.4',
     author='SKbarbon',
     description='A tiny version of flet to work on mobile developments',
     long_description=long_descibe,
     long_description_content_type='text/markdown',
     url='https://github.com/SKbarbon/flet_lite',
-    install_requires=["flask_cors", "flask", "jsonpickle"],
-    packages=find_packages(include=["flet", "flet_core", "flet.web"], exclude=["web_development_app"]),
+    install_requires=["flask_cors", "flask", "jsonpickle", "repath"],
+    packages=find_packages(include=["flet", "flet_core", "flet.web", "flet/*", "flet.api"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: MacOS :: MacOS X",

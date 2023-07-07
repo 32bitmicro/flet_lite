@@ -1,7 +1,13 @@
 include flet/
 include flet/*
 include flet/web/*
+include flet/api/*
+include flet/cli_tools/*
+include flet/tools/*
+include flet/utils/*
 include flet/web/development.zip
 include flet/web/dist.zip
 include flet_core/
 include flet_core/*
+include flet_core/canvas/*
+include flet_core/charts/*

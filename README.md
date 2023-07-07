@@ -17,9 +17,9 @@ You can use any code editor that support `pip` on mobile or iPad, these are some
 This package is not prepared to use for production cases so its a development only, use the original [flet](https://flet.dev) for production. The only tool here for production is the command `python3 -m flet.publish script.py` which is a custom command tool the present similer usage for the original `flet publish script.py`.
 
 ## installation ⬇️
-
+- uninstall `flet` if you did install it before: `pip uninstall flet`.
+- uninstall `flet-core` if you did install flet before: `pip uninstall flet-core`.
 Using `pip`, enter:
-- **Soon**
 ```zsh
 pip install flet_lite --upgrade
 ```
