@@ -1,7 +1,8 @@
 from flask import Flask, request
 from flask_cors import CORS
-import threading
+import threading, json
 from .get_free_port import free_port
+from ..api.manage_client_pushes import manage_client_pushes
 
 
 class ApiHost:
@@ -29,22 +30,32 @@ class ApiHost:
 
         @app.route("/", methods=["POST"])
         def index():
+            json_data = json.loads(str(request.data.decode()))
+            self.page.width = json_data['width']
+            self.page.height = json_data['height']
+            self.page.window_width = self.page.width
+            self.page.window_height = self.page.height
             threading.Thread(target=self.page.start_target, daemon=True).start()
-            return {}
+            return {"ok":True}
 
 
         @app.route("/get_data", methods=["POST"])
         def get_data ():
             if len(self.updates_and_events) != 0:
-                d = self.updates_and_events[0]
-                self.updates_and_events.remove(d)
-                return d
+                updates_dict = {
+                    "ok" : True,
+                    "updates" : self.updates_and_events
+                }
+                self.updates_and_events = []
+                return updates_dict
             return {}
 
 
         @app.route("/push_data", methods=["POST"])
         def push_data():
-            print(request.values)
+            json_data = json.loads(str(request.data.decode()))
+            # print(f"{json_data}")
+            manage_client_pushes(push_dict=json_data, page_class=self.page)
             return {}
 
         app.run(port=self.port)

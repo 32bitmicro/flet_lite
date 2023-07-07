@@ -1,78 +1,85 @@
-from flet_core_custom import Page
+from api.get_host_updates import get_host_updates
+from api.initialize_page_target import initialize_page_target
+from tools.manage_host_updates import manage_host_updates
+from flet_utils.manage_page_events import manage_page_events
 import flet
-import json
+import time
+import traceback
 import asyncio
+import json, os
 
-# locals
-from flet_browser.tools.get_host_update import get_host_updates
-from flet_browser.tools.initialise_page_target import run_page_target
-from flet_browser.flet_utils.generate_control import generate_a_control
-from flet_browser.flet_utils.update_page import update_page
-from flet_browser.ui.push_error import show_error_content
-from flet_browser.flet_utils.update_control import update_a_control
-from api.value_update import update_value
-
+from api.push_event_to_host import push_event_to_host
 
 class Main:
     def __init__(self, page:flet.Page) -> None:
         self.page = page
-        page.main_class = self
         page.update()
 
-        # Initialise that target function on page on real-python
-        run_page_target()
-
-        # make a Unique number for each control and save them
+        # props
         self.all_controls = {}
+        self.parents_of_controls = {}
+        self.facing_error = False
 
-        # app props
-        self.there_is_error = False
-
-        # get updates from the host on real-time.
-        # asyncio.run(self.loop_updates_checker())
-        self.loop_updates_checker()
+        time.sleep(0.1)
+        # asyncio.run(self.check_for_host_updates())
+        asyncio.create_task(self.check_for_host_updates())
+    
+    async def check_for_host_updates (self):
+        try: initialize_page_target_result = initialize_page_target(width=self.page.width, height=self.page.height)
+        except: self.push_error_page("Browser error: Cant connect with the host"); return;
         
-    def loop_updates_checker (self):
-        while True:
-            try:
-                self.get_events_and_update()
-            except Exception as e:
-                show_error_content(self.page, error=f"Browser error: {e}")
-                print(e)
-
-    def get_events_and_update(self):
-        update_content = json.loads(get_host_updates())
-
-        if self.there_is_error: return
-        if update_content == {}: return
-
-        # add request
-        if update_content["action"] == "add":
-            new_control = generate_a_control(self.page, update_content=update_content)
-            control_number = update_content["control_data"]['number']
-            self.page.add(new_control)
-            self.all_controls.update({f"{control_number}":new_control})
-            new_control.flet_lite_number = control_number
-            new_control.update()
-        # error request
-        elif update_content['action'] == "error":
-            show_error_content(self.page, error=update_content['content'])
-            self.there_is_error = True
-        # page_update request
-        elif update_content["action"] == "page_update":
-            update_page(self.page, update_content=update_content)
-            self.page.update()
-        # update control request
-        elif update_content['action'] == "update":
-            control_number = update_content['control_data']['control_number']
-            if str(control_number) in self.all_controls:
-                control_object = self.all_controls[str(control_number)]
-                control_updated_props = update_content['control_data']['flet_class_dict']
-                update_a_control(control_class=control_object, update_event_dict=control_updated_props)
-                control_object.update()
-
+        if initialize_page_target_result['ok'] == False:
+            self.push_error_page(f"Host error: {initialize_page_target_result['error']}")
+            return
+        
+        # manage page events
+        manage_page_events(main_class=self, page=self.page) #! This is not working..
         
         self.page.update()
+        
+        while self.facing_error == False:
+            try: 
+                u = get_host_updates(main_class=self)
+                if u == {}: pass
+                else:
+                    for upd in u['updates']:
+                        manage_host_updates(update_dict=upd, main_class=self)
+            except Exception as e:
+                traceback.print_exc()
+                self.push_error_page(f"{e}")
+            # time.sleep(0.05)
+            await asyncio.sleep(0.05)
+        
+        print("This page is no longer updated.")
+    
+    def push_error_page (self, error:str):
+        if self.facing_error: return
+        self.page.clean()
+        self.page.appbar = None
+        self.page.bgcolor = flet.colors.WHITE
+        self.facing_error = True
+        self.page.vertical_alignment = flet.MainAxisAlignment.CENTER
+        self.page.controls.append(flet.Column([
+            flet.Row([
+                flet.Icon(name=flet.icons.INFO_OUTLINED, color="red")
+            ], alignment=flet.MainAxisAlignment.CENTER),
+            flet.Row([
+                flet.Text(f"{error}", color="red", text_align=flet.TextAlign.CENTER)
+            ], alignment=flet.MainAxisAlignment.CENTER)
+        ], alignment=flet.MainAxisAlignment.CENTER))
+        self.page.update()
+    
+    def push_to_host (self, event_name:str, flet_class_number:int, event_data:dict):
+        """Push event to the host"""
+        if self.facing_error: return
+        print("Debug: The function `push_to_host` is called!")
+        try: push_event_to_host(event_name, flet_class_number, event_data)
+        except Exception as e: self.push_error_page(f"Browser error: {e}")
 
 
-flet.app(target=Main)
+if os.path.isfile("app_data.json"):
+    app_data = json.loads(open("app_data.json", encoding="utf-8").read())
+    assets_dir = app_data['assets_dir']
+    flet.app(target=Main, assets_dir=f"{assets_dir}")
+else:
+    flet.app(target=Main)

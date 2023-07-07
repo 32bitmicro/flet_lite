@@ -1,3 +1,4 @@
+from ..tools.append_assets_to_dist import append_assets_to_dist
 import shutil
 import os
 import tarfile
@@ -5,12 +6,17 @@ import zipfile
 
 
 class WebDirSet:
-    def __init__ (self, localhost_api_url:str):
+    def __init__ (self, localhost_api_url:str, assets_dir_path:str):
         
         # step1: Clean up then Generate the `web` dir on user's current path.
         self.setup_web_folder()
 
         self.create_localhost_url_file(url=localhost_api_url)
+
+        # step2: Add assets dir to app
+        if assets_dir_path != None:
+            self.append_the_assets_to_app(assets_path=assets_dir_path)
+
         # step2: Setup the tar.gz file
         self.compress_the_web_app()
 
@@ -35,7 +41,11 @@ class WebDirSet:
 
         # remove the `_web` folder
         shutil.rmtree("_web")
+    
 
+
+    def append_the_assets_to_app (self, assets_path:str):
+        append_assets_to_dist(assets_path, dist_name="web")
 
     
     def compress_the_web_app (self):

@@ -1,16 +1,22 @@
+from typing import Any
 from .utils.api_host import ApiHost
 from .utils.web_host import WebFilesHost
 from .tools.setup_web import WebDirSet
-from .utils.all_props_posible import all_posible_props
-from .utils.control_dict_object import control_dict_object
-from .api.generate_ctrl_update_dict import generate_control_update_dict
+from .api.push_add_request import push_add_request
+from .api.push_update_request import push_update_request
+from .api.push_remove_request import push_remove_request
+from .api.push_page_update_request import push_page_update_request
+from .api.push_clean_request import push_clean_request
+from .api.push_go_route_request import push_go_route_request
+from .utils.get_all_subcontrols import get_all_subControls_on_the_page
 import threading
 import webbrowser
-import time, json
+import time, asyncio, traceback
+import flet
 
 
 class Page (object):
-    def __init__ (self, target_function, debug):
+    def __init__ (self, target_function, assets_dir_path:str, debug):
         self.target_function = target_function
 
         # set all hosts without starting them.
@@ -18,7 +24,7 @@ class Page (object):
         self.web_files_host = WebFilesHost()
         
         # Set the development web directory
-        WebDirSet(localhost_api_url=self.api_host.url)
+        WebDirSet(localhost_api_url=self.api_host.url, assets_dir_path=assets_dir_path)
 
         # Start the host API
         threading.Thread(target=self.api_host.host, daemon=True).start()
@@ -34,11 +40,13 @@ class Page (object):
             open("localhost_api_url.txt", "w+", encoding="utf-8").write(self.api_host.url)
         
         # page class's flet props
+        self.appbar = None
+        self.route = "/"
         self.last_control_number = 0
-        self.__controls_are_pushed = []
+        self.__controls_are_pushed = [] # The controls that did be on the page at least once.
+        self.views = []
         self.controls = []
         self.controls_dict_numbers = {}
-
     
     def start_target (self):
         """When the host and client browser are ready, this is will be called to start the target function."""
@@ -47,68 +55,123 @@ class Page (object):
             self.target_function(self)
         except Exception as e:
             self.api_host.push_an_error(error=str(e))
-            print(e)
+            traceback.print_exc()
     
 
     #! ---------Flet page functions----------
 
 
-    def add(self, *controls):
-        for control in controls:
-            self.controls.append(control)
+    def add(self, control, parent="page"):
+        control.flet_lite_number = self.last_control_number
+        control.parent = parent
+        control.page = self
 
-            control.page = self
-            control.flet_lite_control_number = self.last_control_number
-
+        push_add_request(controls=[control], page_class=self)
+        if control not in self.__controls_are_pushed:
             self.__controls_are_pushed.append(control)
-            self.controls_dict_numbers.update({f"{self.last_control_number}":control})
+        
+        if parent == "page" and control not in self.controls:
+            self.controls.append(control)
+        
+        self.controls_dict_numbers[f"{control.flet_lite_number}"] = control
 
-            wanted_props = {}
-            for p in all_posible_props():
-                if hasattr(control, p):
-                    value_of_attr = getattr(control, p)
-                    wanted_props.update({f"{p}":value_of_attr})
-            self.api_host.add_update_on_wait(
-                {
-                    "action" : "add",
-                    "control_data" : control_dict_object(control=control)
-                }
-            )
-            self.last_control_number = self.last_control_number + 1
+        self.last_control_number = self.last_control_number + 1
+
+        if hasattr (control, "controls"):
+            for I in control.controls:
+                self.add(I, parent=control.flet_lite_number)
+        elif hasattr(control, "content"):
+            if control.content != None:
+                self.add(control=control.content, parent=control.flet_lite_number)
     
     def update (self, *controls):
-        page_props = {}
-        for p in self.__dict__:
-            if isinstance(p, int) or isinstance(p, bool) or isinstance(p, str) or isinstance(p, float) or isinstance(p, list) or isinstance(p, tuple):
-                if str(p) in ["controls", "_Page__controls_are_pushed", "api_host", 
-                              "web_files_host", "target_function", "controls_dict_numbers"]: pass
+        # push the controls that are not pushed yet
+        for con in self.controls:
+            if con not in self.__controls_are_pushed:
+                self.add(con)
+        
+        for sub_con in get_all_subControls_on_the_page(parent=self):
+            if sub_con not in self.__controls_are_pushed:
+                if hasattr(sub_con, "parent"):
+                    self.add(sub_con, parent=sub_con.parent.flet_lite_number)
                 else:
-                    page_props.update({f"{p}":self.__dict__[p]})
-            elif self.__dict__[p] == None: pass
-            else:
-                pass
+                    self.add(sub_con)
         
-        # push the controls that are not on the page to be on the page
-        for i in self.controls:
-            if i not in self.__controls_are_pushed:
-                self.add(i)
+        # update sub controls
+        all_controls_to_update = []
+        for control in controls:
+            all_controls_to_update.append(control)
+            for i in get_all_subControls_on_the_page(control):
+                if i.page != None: i.page = self
+                all_controls_to_update.append(i)
         
 
-        # update controls if existed
-        if controls != ():
-            for con in controls:
-                control_update_event_data = generate_control_update_dict(control=con)
-                self.api_host.add_update_on_wait(update=control_update_event_data)
+        # give view's controls a number
+        for v in self.views:
+            v.flet_lite_number = -1
+            for i in get_all_subControls_on_the_page(parent=v):
+                if not hasattr(i, "flet_lite_number"):
+                    setattr(i, "flet_lite_number", self.last_control_number)
+                
+                if i in self.__controls_are_pushed: pass
+                else:
+                    self.__controls_are_pushed.append(i)
+
+                self.controls_dict_numbers[f"{i.flet_lite_number}"] = i
+                self.last_control_number = self.last_control_number + 1
+        
+
+        # update page props
+        push_page_update_request(self)
+
+
+        if controls == ():
+            for i in get_all_subControls_on_the_page(parent=self):
+                all_controls_to_update.append(i)
+
+        push_update_request(controls=all_controls_to_update, page_class=self)
+
+        # remove the controls that removed
+        all_controls = get_all_subControls_on_the_page(self)
+        for con in self.__controls_are_pushed:
+            if con not in all_controls:
+                push_remove_request(control_number=con.flet_lite_number, page_class=self)
+    
+
+    def remove (self, control):
+        if control in self.controls:
+            self.controls.remove(control)
         else:
-            for con in self.controls:
-                control_update_event_data = generate_control_update_dict(control=con)
-                self.api_host.add_update_on_wait(update=control_update_event_data)
-
+            raise ValueError("list.remove(x): x not in list")
         
-        self.api_host.add_update_on_wait(
-            {
-                "action" : "page_update",
-                "props" : page_props,
-                "appbar_class_props" : {}
-            }
-        )
+        self.update()
+    
+
+
+    def clean (self, control=None):
+        if control == None:
+            push_clean_request("page", page_class=self)
+            for i in self.controls:
+                if i in list(self.__controls_are_pushed):
+                    self.__controls_are_pushed.remove(i)
+            self.controls.clear()
+        else:
+            push_clean_request(control.flet_lite_number, page_class=self)
+            for i in control.controls:
+                if i in list(self.__controls_are_pushed):
+                    self.__controls_are_pushed.remove(i)
+            control.controls.clear()
+    
+    def _clean (self, control):
+        self.clean(control)
+    
+
+    def go (self, route):
+        push_go_route_request(route_name=route, page_class=self)
+
+
+    def window_center(self): pass
+
+    @property
+    def get_all_pushed_controls (self):
+        return self.__controls_are_pushed

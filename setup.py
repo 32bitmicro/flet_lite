@@ -12,7 +12,7 @@ setup(
     long_description=long_descibe,
     long_description_content_type='text/markdown',
     url='https://github.com/SKbarbon/flet_lite',
-    install_requires=["flask_cors", "flask"],
+    install_requires=["flask_cors", "flask", "jsonpickle"],
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

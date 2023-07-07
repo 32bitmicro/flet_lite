@@ -1,4 +1,4 @@
-
+# From host
 ## on `error action request
 ```json
 {
@@ -11,11 +11,15 @@
 ```json
 {
     "action" : "add",
-    "control_data" : {
-        "name" : "",
-        "number" : <Number of the control>,
-        "flet_class_dict" : {}
-    }
+    "controls" : [
+        {
+            "name" : "<flet_class_name>",
+            "number" : "<flet_lite_control_number>",
+            "flet_class_dict" : {},
+            "parent" : "Page/<flet_lite_control_number>",
+            "overlay" : false
+        }
+    ]
 }
 ```
 
@@ -24,8 +28,8 @@
 {
     "action" : "page_update",
     "props" : {},
-    "appbar_class_props" : {
-        "bgcolor" : "white"
+    "page_custom_controls" : {
+        "appbar" : {"bgcolor" : "white"}
     }
 }
 ```
@@ -34,21 +38,38 @@
 ```json
 {
     "action" : "update",
-    "control_data" : {
-        "control_number" : <number>,
-        "flet_class_dict" : {}
-    }
+    "controls" : [
+        {
+            "number" : "<flet_lite_control_number>",
+            "flet_class_dict" : {}
+        }
+    ]
 }
 ```
 
-## on 'push' update from browser
+## on control `clean` request
 ```json
 {
-    "action" : "push",
-    "control_update" : true,
-    "control_data" : {
-        "number" : 0,
-        "flet_class_dict" : {}
-    }
+    "action" : "clean",
+    "control_number" : "page/flet_lite_control_number"
+}
+```
+
+## on control `remove` request
+```json
+{
+    "action" : "remove",
+    "controls_numbers" : [1, 2, 4, 7]
+}
+```
+
+# From browser
+
+## push event updates
+```json
+{
+    "event_name" : "resize",
+    "flet_class_number" : "",
+    "data" : ""
 }
 ```

@@ -257,15 +257,15 @@ class Control:
 
     # public methods
     def update(self):
-        assert self.__page, "Control must be added to the page first."
-        self.__page.update(self)
+        assert self.page, "Control must be added to the page first."
+        self.page.update(self)
 
     async def update_async(self):
         assert self.__page, "Control must be added to the page first."
         await self.__page.update_async(self)
 
     def clean(self):
-        assert self.__page, "Control must be added to the page first."
+        assert self.page, "Control must be added to the page first."
         self.__page._clean(self)
 
     async def clean_async(self):

@@ -30,7 +30,7 @@ def app (
     if view != FLET_APP:
         print("WARNING: flet-lite will always work on web_browser view mode.")
     
-    the_page = Page(target_function=target, debug=debug)
+    the_page = Page(target_function=target, assets_dir_path=assets_dir, debug=debug)
 
     # Define a signal handler function
     def signal_handler(signal, frame):

@@ -12,6 +12,10 @@ You can use any code editor that support `pip` on mobile or iPad, these are some
 - [a-shell](https://apps.apple.com/app/id1473805438): Its a free app that provide a linux-like shell, its include python by default, also supports `pip`.
 
 
+|| **Is this for production 🌐?**
+
+This package is not prepared to use for production cases so its a development only, use the original [flet](https://flet.dev) for production. The only tool here for production is the command `python3 -m flet.publish script.py` which is a custom command tool the present similer usage for the original `flet publish script.py`.
+
 ## installation ⬇️
 
 Using `pip`, enter:
@@ -20,20 +24,20 @@ Using `pip`, enter:
 pip install flet_lite --upgrade
 ```
 
-To use the beta version, install it from `git` command:
-```zsh
-pip install git+https://github.com/SKbarbon/flet_lite.git --upgrade
-```
-
 ## docs 📖
-This `flet-lite` is using the `flet` version v0.7.4
+This `flet-lite` is a custom clone of `flet` version v0.7.4
 
 Everything is the same on original flet, read the docs here:
 [flet.dev](https://flet.dev/)👈
 
 ## flet commands 
-Due iPadOS limits, you cant use many of `flet` commands. The supported command is:
+Due iOS, iPadOS and Android limits, you cant use many of `flet` commands. The supported commands is:
 - **`python3 -m flet.publish myapp.py`**: This is used to create a pyodide site of your flet application so it can work on a normal web host (Any host that support static files, for example php servers).
+
+## limitations in code
+- This package does not support flet async features.
+- The API manager here is a customized http host, thats why its slower than original flet.
+- You must use the Literal values insted of Literal classes. For example instead of using `alignment=MainAxisAlignment.CENTER`, just use `alignment="center"`.
 
 ## best usage practice
 soon
