@@ -13,12 +13,12 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/SKbarbon/flet_lite',
     install_requires=["flask_cors", "flask", "jsonpickle"],
-    packages=find_packages(),
+    packages=find_packages(include=["flet", "flet_core", "flet.web"], exclude=["web_development_app"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows"
     ],
     include_package_data=True,
-    include_dirs=["web"]
+    include_dirs=["flet", "flet_core", "flet.web"]
 )

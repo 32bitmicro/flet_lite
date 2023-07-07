@@ -1,5 +1,7 @@
 include flet/
-include flet/web/
+include flet/*
 include flet/web/*
 include flet/web/development.zip
+include flet/web/dist.zip
 include flet_core/
+include flet_core/*
