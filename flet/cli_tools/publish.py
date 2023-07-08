@@ -1,4 +1,4 @@
-from tools.append_assets_to_dist import append_assets_to_dist
+from ..tools.append_assets_to_dist import append_assets_to_dist
 import shutil
 import os
 import tarfile

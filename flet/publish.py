@@ -1,4 +1,4 @@
-from cli_tools.publish import PublishDistSet
+from .cli_tools.publish import PublishDistSet
 import sys, os
 
 
