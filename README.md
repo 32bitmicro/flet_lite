@@ -41,3 +41,4 @@ Due iOS, iPadOS and Android limits, you cant use many of `flet` commands. The su
 
 ## best usage practice
 soon
+- Do NOT make the host run on background on mobile, because mobile can NOT keep the app running on background. Try to run the browser and the host together.

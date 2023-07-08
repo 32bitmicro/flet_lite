@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
-import threading, json
+import threading, json, os
 from .get_free_port import free_port
 from ..api.manage_client_pushes import manage_client_pushes
 
@@ -56,6 +56,11 @@ class ApiHost:
             json_data = json.loads(str(request.data.decode()))
             # print(f"{json_data}")
             manage_client_pushes(push_dict=json_data, page_class=self.page)
+            return {}
+        
+        @app.route("/close", methods=["POST"])
+        def close_program ():
+            os._exit(1)
             return {}
 
         app.run(port=self.port)

@@ -6,9 +6,9 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name='flet_lite',
-    version='1.4',
+    version='1.5',
     author='SKbarbon',
-    description='A tiny version of flet to work on mobile developments',
+    description='A tiny version of flet to work on mobile development',
     long_description=long_descibe,
     long_description_content_type='text/markdown',
     url='https://github.com/SKbarbon/flet_lite',
