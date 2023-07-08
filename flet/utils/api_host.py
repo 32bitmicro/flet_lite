@@ -63,6 +63,7 @@ class ApiHost:
             os._exit(1)
             return {}
 
+        print(f"To close the program, open this on terminal: '{self.url}/close'")
         app.run(port=self.port)
     
     def add_update_on_wait(self, update:dict):
