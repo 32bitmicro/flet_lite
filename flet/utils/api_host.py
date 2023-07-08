@@ -58,7 +58,7 @@ class ApiHost:
             manage_client_pushes(push_dict=json_data, page_class=self.page)
             return {}
         
-        @app.route("/close", methods=["POST"])
+        @app.route("/close", methods=["GET"])
         def close_program ():
             os._exit(1)
             return {}
