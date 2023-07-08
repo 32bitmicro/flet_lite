@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name='flet_lite',
-    version='1.5',
+    version='1.6',
     author='SKbarbon',
     description='A tiny version of flet to work on mobile development',
     long_description=long_descibe,
