@@ -10,6 +10,8 @@ from .api.push_clean_request import push_clean_request
 from .api.push_go_route_request import push_go_route_request
 from .utils.page_posible_props import all_page_posible_props
 from .utils.get_all_subcontrols import get_all_subControls_on_the_page
+from .tools.platform_specifics.get_platform_name import get_platform_name
+from .tools.platform_specifics.pythonista_webview import safari_in_app_view
 import threading
 import webbrowser
 import time, asyncio, traceback
@@ -17,7 +19,7 @@ import flet
 
 
 class Page (object):
-    def __init__ (self, target_function, assets_dir_path:str, debug):
+    def __init__ (self, target_function, assets_dir_path:str):
         self.target_function = target_function
 
         # set all hosts without starting them.
@@ -34,12 +36,13 @@ class Page (object):
         threading.Thread(target=self.web_files_host.start, daemon=True).start()
 
         time.sleep(1)
-        if debug == False:
-            print(self.web_files_host.web_url)
-            webbrowser.open(self.web_files_host.web_url)
+
+        # start opening the localhost URL in the browser, or platform specific view.
+        print(self.web_files_host.web_url) #? print the URL of the app
+        if get_platform_name() == "pythonista":
+            safari_in_app_view(str(self.web_files_host.web_url))
         else:
-            open("localhost_api_url.txt", "w+", encoding="utf-8").write(self.api_host.url)
-        
+            webbrowser.open(self.web_files_host.web_url)
 
         # set all page props
         for i in all_page_posible_props:
