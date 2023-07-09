@@ -8,6 +8,7 @@ from .api.push_remove_request import push_remove_request
 from .api.push_page_update_request import push_page_update_request
 from .api.push_clean_request import push_clean_request
 from .api.push_go_route_request import push_go_route_request
+from .utils.page_posible_props import all_page_posible_props
 from .utils.get_all_subcontrols import get_all_subControls_on_the_page
 import threading
 import webbrowser
@@ -39,6 +40,11 @@ class Page (object):
         else:
             open("localhost_api_url.txt", "w+", encoding="utf-8").write(self.api_host.url)
         
+
+        # set all page props
+        for i in all_page_posible_props:
+            setattr(self, i, None)
+        
         # page class's flet props
         self.appbar = None
         self.route = "/"
@@ -62,6 +68,14 @@ class Page (object):
 
 
     def add(self, control, parent="page"):
+        if hasattr(control, "build"):
+            control.page = self
+            control.parent = parent
+            control.flet_lite_number = self.last_control_number
+            self.last_control_number = self.last_control_number + 1
+            self.controls_dict_numbers[f'{control.flet_lite_number}'] = control
+            self.__controls_are_pushed.append(control)
+            control = control.build()
         control.flet_lite_number = self.last_control_number
         control.parent = parent
         control.page = self
