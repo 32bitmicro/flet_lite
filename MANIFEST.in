@@ -7,6 +7,7 @@ include flet/tools/*
 include flet/utils/*
 include flet/web/development.zip
 include flet/web/dist.zip
+include flet/tools/platform_specifics/*
 include flet_core/
 include flet_core/*
 include flet_core/canvas/*
