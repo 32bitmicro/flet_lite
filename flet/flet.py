@@ -33,6 +33,11 @@ def app (
 
     # Define a signal handler function
     def signal_handler(signal, frame):
+        print("""
+Program is closed!
+Give the project a rate at github if you did like it: https://github.com/SKbarbon/flet_lite
+Create an issue if there is one: https://github.com/SKbarbon/flet_lite/issues
+""")
         sys.exit()
 
     # Set the signal handler for SIGINT (Ctrl+C)
