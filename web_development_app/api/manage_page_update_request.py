@@ -1,5 +1,6 @@
 from flet_utils.appbar_coder import dict_to_appbar
 from flet_utils.view_coder import dict_to_view
+from flet_utils.hook_control_events import HookControlEvents
 from flet_utils.control_coder import dict_to_control
 
 
@@ -36,3 +37,6 @@ def manage_page_update_request (update_dict, main_class):
             main_class.page.overlay.append (control)
             main_class.all_controls[f'{control.flet_lite_number}'] = control
             main_class.parents_of_controls[control] = "page"
+            
+            # Hook all the overlay control events.
+            HookControlEvents(control=control, main_class=main_class)

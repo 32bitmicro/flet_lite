@@ -102,8 +102,7 @@ class Page (object):
                 self.add(I, parent=control.flet_lite_number)
         elif hasattr(control, "content"):
             if control.content != None:
-                self.add(control=control.content, parent=control.flet_lite_number)
-    
+                self.add(control=control.content, parent=control.flet_lite_number)    
 
     def setup_overlay_control (self, c:flet.Control):
         c.flet_lite_number = self.last_control_number

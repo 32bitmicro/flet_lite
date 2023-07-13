@@ -65,6 +65,10 @@ class Audio(CallableControl):
             data=data,
         )
 
+        # flet_lite props
+        self.duration = 0
+        self.position = 0
+
         self.src = src
         self.src_base64 = src_base64
         self.autoplay = autoplay
@@ -116,20 +120,24 @@ class Audio(CallableControl):
         )
 
     def get_duration(self) -> Optional[int]:
-        sr = self._call_method("get_duration", [])
-        return int(sr) if sr else None
+        # sr = self._call_method("get_duration", [])
+        # return int(sr) if sr else None
+        return self.duration
 
     async def get_duration_async(self) -> Optional[int]:
-        sr = await self._call_method_async("get_duration", [])
-        return int(sr) if sr else None
+        # sr = await self._call_method_async("get_duration", [])
+        # return int(sr) if sr else None
+        return self.duration
 
     def get_current_position(self) -> Optional[int]:
-        sr = self._call_method("get_current_position", [])
-        return int(sr) if sr else None
+        # sr = self._call_method("get_current_position", [])
+        # return int(sr) if sr else None
+        return self.position
 
     async def get_current_position_async(self) -> Optional[int]:
-        sr = await self._call_method_async("get_current_position", [])
-        return int(sr) if sr else None
+        # sr = await self._call_method_async("get_current_position", [])
+        # return int(sr) if sr else None
+        return self.position
 
     # src
     @property

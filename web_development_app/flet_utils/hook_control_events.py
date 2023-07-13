@@ -2,7 +2,8 @@ import flet
 
 all_actions = [
     "on_change", "on_submit", "on_focus", "on_blur", "on_hover", "on_click",
-    "on_result", "on_upload"
+    "on_result", "on_upload", "on_duration_changed", "on_loaded", "on_position_changed",
+    "on_seek_complete", "on_state_changed"
 ]
 
 

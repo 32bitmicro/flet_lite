@@ -19,12 +19,12 @@ def run_event_function (control, page_class, event_data, event_function_name, ap
         e.control = control
         e.page = page_class
         if getattr(control, event_function_name) != None:
+            if append_keys != None:
+                for k in append_keys:
+                    setattr(e, k, append_keys[k])
             if not hasattr(getattr(control, event_function_name), "__dict__"):
                 do_event_function()
             elif getattr(control, event_function_name).__dict__ == {}:
-                if append_keys != None:
-                    for k in append_keys:
-                        setattr(e, k, append_keys[k])
                 do_event_function()
             elif getattr(control, event_function_name).__dict__['_EventHandler__handlers'] != {}:
                 do_event_function()
