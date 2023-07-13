@@ -4,6 +4,7 @@ from ..tools.update_control_on_event import control_update_on_new_event
 
 
 def manage_client_pushes(push_dict:dict, page_class):
+    print(push_dict)
     event_name = push_dict['event_name']
     control_number = push_dict['flet_class_number']
     event_data = push_dict['data']

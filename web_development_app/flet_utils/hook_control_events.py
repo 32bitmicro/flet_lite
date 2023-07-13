@@ -1,7 +1,8 @@
 import flet
 
 all_actions = [
-    "on_change", "on_submit", "on_focus", "on_blur", "on_hover", "on_click"
+    "on_change", "on_submit", "on_focus", "on_blur", "on_hover", "on_click",
+    "on_result", "on_upload"
 ]
 
 

@@ -22,5 +22,7 @@ def all_posible_props ():
         "helper_style", "helper_text", "hint_text", "label", "max_length", "max_lines",
         "min_lines", "multiline", "password", "read_only", "prefix_text", "text_size",
         "expand", "disabled", "alignment", "width", "height", "border_radius", "text",
-        "scroll", "auto_scroll", "icon", "name", "src", "src_base64"
+        "scroll", "auto_scroll", "icon", "name", "src", "src_base64",
+        "allowed_extensions", "allow_multiple", "dialog_title", "file_name",
+        "file_type", "initial_directory", "state"
     ]

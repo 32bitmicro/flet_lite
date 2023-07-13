@@ -1,6 +1,6 @@
 from typing import Literal
 from .page import Page
-import signal, sys
+import signal, sys, shutil, os
 
 
 WEB_BROWSER = "web_browser"
@@ -38,6 +38,8 @@ Program is closed!
 Give the project a rate at github if you did like it: https://github.com/SKbarbon/flet_lite
 Create an issue if there is one: https://github.com/SKbarbon/flet_lite/issues
 """)
+        if os.path.isdir ("web") and os.path.isfile("web/index.html"):
+            shutil.rmtree("web")
         sys.exit()
 
     # Set the signal handler for SIGINT (Ctrl+C)

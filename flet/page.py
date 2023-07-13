@@ -54,6 +54,7 @@ class Page (object):
         self.last_control_number = 0
         self.__controls_are_pushed = [] # The controls that did be on the page at least once.
         self.views = []
+        self.overlay = []
         self.controls = []
         self.controls_dict_numbers = {}
     
@@ -79,6 +80,8 @@ class Page (object):
             self.controls_dict_numbers[f'{control.flet_lite_number}'] = control
             self.__controls_are_pushed.append(control)
             control = control.build()
+        
+        control.is_overlay = False
         control.flet_lite_number = self.last_control_number
         control.parent = parent
         control.page = self
@@ -101,6 +104,20 @@ class Page (object):
             if control.content != None:
                 self.add(control=control.content, parent=control.flet_lite_number)
     
+
+    def setup_overlay_control (self, c:flet.Control):
+        c.flet_lite_number = self.last_control_number
+        self.last_control_number = self.last_control_number + 1
+
+        c.page = self
+        c.is_overlay = True
+        c.parent = "page"
+
+        self.controls_dict_numbers[f"{c.flet_lite_number}"] = c
+
+        return c
+
+    
     def update (self, *controls):
         # push the controls that are not pushed yet
         for con in self.controls:
@@ -113,6 +130,10 @@ class Page (object):
                     self.add(sub_con, parent=sub_con.parent.flet_lite_number)
                 else:
                     self.add(sub_con)
+        
+        # push controls that are overlay and still not pushed
+        for overlay_control in self.overlay:
+            self.setup_overlay_control(c=overlay_control)
         
         # update sub controls
         all_controls_to_update = []
